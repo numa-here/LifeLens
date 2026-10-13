@@ -1,148 +1,86 @@
-# LifeLens Deployment Guide
+# LifeLens Deployment Guide (Vercel)
 
 ## Backend Deployment (Omema's Part)
 
 ### Prerequisites
-- Supabase account (https://supabase.com)
+- Vercel account (https://vercel.com)
 - OpenAI API key (https://platform.openai.com/api-keys)
-- Supabase CLI installed (https://supabase.com/docs/guides/cli)
-- Docker installed (required for local Supabase development)
+- Node.js 18+ installed
+- Git installed
 
-### Step 1: Create Supabase Project
-1. Go to https://supabase.com/dashboard
-2. Click "New Project"
-3. Choose organization (or create one)
-4. Enter project name: `LifeLens`
-5. Set database password (save it securely)
-6. Choose region closest to your users
-7. Click "Create new project"
-8. Wait for project to be ready (2-3 minutes)
+### Step 1: Prepare the Backend
+The backend is now a Next.js application ready for Vercel deployment.
 
-### Step 2: Configure Google OAuth
-1. In Supabase Dashboard, go to **Authentication** → **Providers**
-2. Click on **Google**
-3. Click **Enable Google provider**
-4. You'll need:
-   - Google Cloud Console project
-   - OAuth 2.0 Client ID
-   - OAuth 2.0 Client Secret
-5. Configure redirect URLs:
-   - Add your app's callback URL (e.g., `io.supabase.lifelens://**`)
-   - For Flutter, use the custom URL scheme you configure
-6. Save the configuration
+```bash
+cd backend
+npm install
+```
 
-### Step 3: Create Private Storage Bucket
-1. In Supabase Dashboard, go to **Storage**
-2. Click **New bucket**
-3. Name it: `documents`
-4. **Important**: Set to **Private** (not public)
-5. Click **Create bucket**
+### Step 2: Set Up Vercel Postgres
+1. Go to https://vercel.com/dashboard
+2. Click **Storage** → **Create Database**
+3. Choose **Postgres** (Vercel Postgres)
+4. Enter database name: `lifelens-db`
+5. Select region closest to your users
+6. Click **Create Database**
+7. Wait for database to be ready
+
+### Step 3: Set Up Vercel Blob Storage
+1. In Vercel Dashboard, go to **Storage** → **Create Database**
+2. Choose **Blob** (Vercel Blob Storage)
+3. Enter store name: `lifelens-blob`
+4. Click **Create Store**
+5. Wait for store to be ready
 
 ### Step 4: Run Database Migrations
-1. In Supabase Dashboard, go to **SQL Editor**
-2. Click **New query**
-3. Copy and paste the contents of `supabase/migrations/001_create_tables.sql`
-4. Click **Run** (or press Ctrl+Enter)
-5. Create a new query and paste `supabase/migrations/002_storage_policies.sql`
-6. Click **Run**
-7. Verify both tables were created successfully
+1. In Vercel Dashboard, go to your Postgres database
+2. Click **Console** or **Query**
+3. Copy and paste the contents of `backend/migrations/0001_init.sql`
+4. Click **Run**
+5. Verify both tables were created successfully
 
-### Step 5: Install and Configure Supabase CLI
+### Step 5: Deploy to Vercel
 ```bash
-# Install Supabase CLI (if not already installed)
-# Windows: Use winget or download from https://supabase.com/docs/guides/cli
-winget install Supabase.CLI
+# Install Vercel CLI
+npm install -g vercel
 
-# Login to Supabase
-supabase login
+# Login to Vercel
+vercel login
 
-# Link to your project
-supabase link --project-ref YOUR_PROJECT_REF
+# Deploy the backend
+cd backend
+vercel
 ```
 
-You can find your project reference in Supabase Dashboard:
-- Project Settings → General → Project Reference
+Follow the prompts:
+- Set project name: `lifelens-backend`
+- Link to existing Vercel project (if applicable)
+- Select region
 
-### Step 6: Set Environment Variables
+### Step 6: Configure Environment Variables
+In Vercel Dashboard → **Settings** → **Environment Variables**, add:
+
+```
+OPENAI_API_KEY=your_actual_openai_key_here
+```
+
+The following are automatically set by Vercel when you add Postgres and Blob:
+- `POSTGRES_URL`
+- `POSTGRES_PRISMA_URL`
+- `POSTGRES_URL_NON_POOLING`
+- `BLOB_READ_WRITE_TOKEN`
+
+### Step 7: Redeploy with Environment Variables
 ```bash
-# Set your OpenAI API key as a secret
-supabase secrets set OPENAI_API_KEY=your_actual_openai_key_here
+vercel --prod
 ```
 
-**Important**: Never commit your API key to GitHub. The `secrets set` command stores it securely in Supabase.
-
-### Step 7: Deploy Edge Functions
-```bash
-# Deploy the analyze-document function
-supabase functions deploy analyze-document
-
-# Deploy the daily-briefing function
-supabase functions deploy daily-briefing
-```
-
-You should see output like:
-```
-Deployed functions:
-  - analyze-document (https://xxx.supabase.co/functions/v1/analyze-document)
-  - daily-briefing (https://xxx.supabase.co/functions/v1/daily-briefing)
-```
-
-### Step 8: Get Supabase Configuration for Flutter
-In Supabase Dashboard, go to **Project Settings** → **API**:
-
-Copy these values and add them to your Flutter app:
-- **Project URL** (supabaseUrl)
-- **anon/public** key (supabaseAnonKey)
-
-Add them to your Flutter app's environment or configuration (not in the code).
-
-### Step 9: Test the Backend APIs
-
-#### Test analyze-document
-Use Supabase Dashboard's **Edge Functions** → **analyze-document** → **Invoke**:
-
-```json
-{
-  "text": "Submit the application form by 20 October 2026. Attach two photographs."
-}
-```
-
-Expected response:
-```json
-{
-  "scan_id": "uuid",
-  "created_at": "2026-10-13T...",
-  "analysis": {
-    "detected_language": "English",
-    "extracted_text": "Submit the application form by 20 October 2026. Attach two photographs.",
-    "summary": "Application submission is required.",
-    "tasks": [...],
-    "warnings": []
-  },
-  "requires_review": true
-}
-```
-
-#### Test daily-briefing
-Use Supabase Dashboard's **Edge Functions** → **daily-briefing** → **Invoke**:
-
-```json
-{}
-```
-
-Expected response:
-```json
-{
-  "date": "2026-10-13",
-  "briefing": "You have no pending tasks...",
-  "next_actions": []
-}
-```
-
-### Step 10: Verify Security Policies
-1. Create a test user in Supabase Dashboard → Authentication
-2. Try to access another user's data - should be blocked by RLS
-3. Verify storage policies by trying to upload to wrong user folder - should be blocked
+### Step 8: Get API Endpoint URLs
+After deployment, Vercel will provide URLs like:
+- `https://lifelens-backend.vercel.app/api/analyze-document`
+- `https://lifelens-backend.vercel.app/api/daily-briefing`
+- `https://lifelens-backend.vercel.app/api/upload`
+- `https://lifelens-backend.vercel.app/api/tasks`
 
 ## Frontend Deployment (Numa's Part)
 
@@ -160,58 +98,241 @@ cd build/web
 vercel
 ```
 
-3. Add Supabase environment variables in Vercel dashboard:
-   - `SUPABASE_URL`
-   - `SUPABASE_ANON_KEY`
+3. Add environment variables in Vercel dashboard:
+   - `BACKEND_URL` (your Vercel backend URL)
+   - `OPENAI_API_KEY` (if needed for client-side features)
 
 ### For Mobile Deployment
 1. Android: Build APK/AAB and upload to Google Play Console
 2. iOS: Build IPA and upload to App Store Connect
 
+## API Documentation
+
+### POST /api/analyze-document
+Analyzes a document (text or image) and extracts tasks.
+
+**Headers:**
+```
+Authorization: Bearer <user_id>
+Content-Type: application/json
+```
+
+**Request Body (text):**
+```json
+{
+  "text": "Submit the application form by 20 October 2026. Attach two photographs."
+}
+```
+
+**Request Body (image):**
+```json
+{
+  "image_data_url": "data:image/jpeg;base64,..."
+}
+```
+
+**Response:**
+```json
+{
+  "scan_id": "uuid",
+  "created_at": "2026-10-13T...",
+  "analysis": {
+    "detected_language": "English",
+    "extracted_text": "...",
+    "summary": "...",
+    "tasks": [...],
+    "warnings": []
+  },
+  "requires_review": true
+}
+```
+
+### POST /api/daily-briefing
+Generates a daily briefing based on pending tasks.
+
+**Headers:**
+```
+Authorization: Bearer <user_id>
+Content-Type: application/json
+```
+
+**Request Body:**
+```json
+{}
+```
+
+**Response:**
+```json
+{
+  "date": "2026-10-13",
+  "briefing": "...",
+  "next_actions": [...]
+}
+```
+
+### POST /api/upload
+Uploads a document image to Vercel Blob storage.
+
+**Headers:**
+```
+Authorization: Bearer <user_id>
+```
+
+**Request Body:**
+```
+FormData with 'file' field containing the image
+```
+
+**Response:**
+```json
+{
+  "url": "https://...",
+  "pathname": "user-id/filename.jpg",
+  "size": 12345,
+  "uploadedAt": "2026-10-13T..."
+}
+```
+
+### GET /api/tasks
+Retrieves all tasks for the authenticated user.
+
+**Headers:**
+```
+Authorization: Bearer <user_id>
+```
+
+**Query Parameters:**
+- `status` (optional): Filter by status (pending, in_progress, completed)
+
+**Response:**
+```json
+{
+  "tasks": [...]
+}
+```
+
+### POST /api/tasks
+Creates a new task.
+
+**Headers:**
+```
+Authorization: Bearer <user_id>
+Content-Type: application/json
+```
+
+**Request Body:**
+```json
+{
+  "scan_id": "uuid",
+  "title": "Task title",
+  "description": "Description",
+  "due_date": "2026-10-20",
+  "priority": "high",
+  "source_evidence": "Supporting text"
+}
+```
+
+### PUT /api/tasks/:id
+Updates an existing task.
+
+**Headers:**
+```
+Authorization: Bearer <user_id>
+Content-Type: application/json
+```
+
+**Request Body:**
+```json
+{
+  "title": "Updated title",
+  "status": "completed"
+}
+```
+
+### DELETE /api/tasks/:id
+Deletes a task.
+
+**Headers:**
+```
+Authorization: Bearer <user_id>
+```
+
+### GET /api/scans
+Retrieves all scan history for the authenticated user.
+
+**Headers:**
+```
+Authorization: Bearer <user_id>
+```
+
+**Response:**
+```json
+{
+  "scans": [...]
+}
+```
+
+## Google OAuth Setup
+
+For Google OAuth, you have two options:
+
+### Option 1: Use NextAuth.js (Recommended)
+1. Install NextAuth in the backend:
+```bash
+cd backend
+npm install next-auth @auth/core
+```
+
+2. Configure NextAuth with Google provider (additional setup required)
+
+### Option 2: Use Firebase Auth
+1. Set up Firebase project
+2. Configure Google Sign-In
+3. Use Firebase SDK in Flutter app
+
+## Security Notes
+
+- Never commit API keys to GitHub
+- Use Vercel environment variables for sensitive data
+- The backend uses simple user_id authentication (replace with proper JWT validation in production)
+- Vercel Blob storage supports private access
+- Database has row-level security policies
+
 ## Troubleshooting
 
-### Edge Function Fails to Deploy
-- Check Supabase CLI is linked correctly: `supabase status`
-- Verify project reference is correct
-- Check Docker is running
+### Deployment Fails
+- Check Node.js version (must be 18+)
+- Verify all dependencies are installed
+- Check Vercel deployment logs
 
-### Function Returns 500 Error
-- Check logs in Supabase Dashboard → Edge Functions → Logs
-- Verify OPENAI_API_KEY is set: `supabase secrets list`
-- Check model name (gpt-4o-mini) is available in your OpenAI account
+### Database Connection Error
+- Verify POSTGRES_URL is set in Vercel environment variables
+- Check Vercel Postgres is active
+- Ensure migration was run successfully
 
-### Storage Upload Fails
-- Verify bucket name is exactly `documents`
-- Check storage policies are applied
-- Ensure upload path follows format: `<user-id>/<filename>`
+### Blob Upload Fails
+- Verify BLOB_READ_WRITE_TOKEN is set
+- Check Vercel Blob store is active
+- Ensure file size is under 10MB
 
-### Google OAuth Fails
-- Verify redirect URLs match your Flutter app's configuration
-- Check Google Cloud Console has correct OAuth consent screen
-- Ensure client ID and secret are correct in Supabase
-
-## Security Checklist
-
-- [ ] OPENAI_API_KEY is set via `supabase secrets set` (not in code)
-- [ ] Storage bucket is set to Private
-- [ ] Row-level security is enabled on both tables
-- [ ] Google OAuth redirect URLs are configured
-- [ ] No API keys are committed to GitHub
-- [ ] Database policies are tested with multiple users
-- [ ] Storage policies are tested with different user folders
-
-## Post-Deployment Monitoring
-
-1. Monitor Edge Function logs in Supabase Dashboard
-2. Track API usage in OpenAI Dashboard
-3. Monitor database size and storage usage in Supabase
-4. Set up alerts for failed function invocations
-5. Review scan history and task data quality
+### OpenAI API Error
+- Verify OPENAI_API_KEY is set correctly
+- Check OpenAI account has credits
+- Verify model name (gpt-4o-mini) is available
 
 ## Cost Estimation
 
-- **Supabase Free Tier**: 500MB database, 1GB storage, 2GB bandwidth/month
+- **Vercel Postgres**: Free tier includes 512MB database, 60 hours compute/month
+- **Vercel Blob**: Free tier includes 500GB storage, 1TB bandwidth/month
+- **Vercel Hosting**: Free tier includes 100GB bandwidth/month
 - **OpenAI**: ~$0.001 per 1K tokens (gpt-4o-mini)
-- **Edge Functions**: Included in Supabase free tier (with limits)
 
 For a small number of users, the free tiers should be sufficient.
+
+## Monitoring
+
+1. Monitor Vercel deployment logs
+2. Track Vercel Postgres usage in dashboard
+3. Monitor Vercel Blob storage usage
+4. Track OpenAI API usage in OpenAI Dashboard
+5. Set up Vercel alerts for errors and failures

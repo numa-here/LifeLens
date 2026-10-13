@@ -33,36 +33,52 @@ Summarize what's due soon and suggest the next three actions.
 
 ## Division of Work
 - **Numa (Frontend Developer)**: Flutter mobile application, UI screens, Material 3 design, dynamic localization (English, Hindi, Telugu), client state management, and mock fallback services.
-- **Omema (Backend & AI Developer)**: Supabase PostgreSQL database, Row Level Security, private storage for scan images, and Edge Functions (`analyze-document` and `daily-briefing`).
+- **Omema (Backend & AI Developer)**: Next.js API routes, Vercel Postgres database, Vercel Blob storage, and AI integration with OpenAI.
 
 ## Project Structure
 ```
 LifeLens/
-├── lib/                   # Flutter & Dart mobile application (Numa)
-│   ├── screens/          # App screens (Login, Home, Upload, Review, My Tasks, Briefing, History, Settings)
-│   ├── widgets/          # Reusable UI components (TaskCard, UploadBox, PriorityBadge, LoadingIndicator)
-│   ├── services/         # API & mock integration layer (Supabase, Auth, Document, Task, ScanHistory)
-│   ├── providers/        # State management (LocaleProvider, TaskProvider)
-│   ├── models/           # Data contracts (Task, ScanRecord, DocumentAnalysisResult)
-│   └── l10n/             # Localization files (en, hi, te)
-├── supabase/             # Supabase backend & Edge functions (Omema)
-│   ├── config.toml
+├── frontend/             # Flutter & Dart mobile application (Numa)
+│   ├── lib/
+│   │   ├── screens/      # App screens (Login, Home, Upload, Review, My Tasks, Briefing, History, Settings)
+│   │   ├── widgets/      # Reusable UI components (TaskCard, UploadBox, PriorityBadge, LoadingIndicator)
+│   │   ├── services/     # API & mock integration layer
+│   │   ├── providers/    # State management (LocaleProvider, TaskProvider)
+│   │   ├── models/       # Data contracts (Task, ScanRecord, DocumentAnalysisResult)
+│   │   └── l10n/         # Localization files (en, hi, te)
+│   └── pubspec.yaml
+├── backend/              # Next.js backend & API routes (Omema)
+│   ├── api/
+│   │   ├── analyze-document/
+│   │   ├── daily-briefing/
+│   │   ├── upload/
+│   │   ├── tasks/
+│   │   └── scans/
+│   ├── lib/
+│   │   ├── db.ts
+│   │   ├── schema.ts
+│   │   └── storage.ts
 │   ├── migrations/
-│   │   ├── 001_create_tables.sql
-│   │   └── 002_storage_policies.sql
-│   └── functions/
-│       ├── analyze-document/
-│       │   └── index.ts
-│       └── daily-briefing/
-│           └── index.ts
+│   │   └── 0001_init.sql
+│   ├── package.json
+│   └── tsconfig.json
 ├── .gitignore
-└── README.md
+├── README.md
+└── DEPLOYMENT.md
 ```
 
 ## Running the Frontend
 ```bash
+cd frontend
 flutter pub get
 flutter run
+```
+
+## Running the Backend (Local Development)
+```bash
+cd backend
+npm install
+npm run dev
 ```
 
 ## Platform Support
@@ -76,43 +92,38 @@ LifeLens is built with Flutter and Dart, supporting:
 ## Backend Setup
 
 ### Prerequisites
-- Supabase project with:
-  - Google OAuth configured
-  - Private storage bucket named `documents`
-  - OpenAI API key set as environment variable
+- Vercel account (https://vercel.com)
+- OpenAI API key (https://platform.openai.com/api-keys)
+- Node.js 18+ installed
 
 ### Database Setup
-Run the SQL migrations in Supabase SQL Editor:
-1. `001_create_tables.sql` - Creates scan_history and tasks tables with RLS
-2. `002_storage_policies.sql` - Configures storage security policies
+The backend uses Vercel Postgres. Follow the deployment guide to set up:
+1. Create Vercel Postgres database
+2. Run the SQL migration from `backend/migrations/0001_init.sql`
+3. Set up Vercel Blob storage for document images
 
-### Edge Functions
-Deploy the functions using Supabase CLI:
-```bash
-supabase functions deploy analyze-document
-supabase functions deploy daily-briefing
-```
+### API Endpoints
+- `POST /api/analyze-document` - Analyze documents (text or image)
+- `POST /api/daily-briefing` - Generate daily AI briefing
+- `POST /api/upload` - Upload document images
+- `GET /api/tasks` - Get user's tasks
+- `POST /api/tasks` - Create a new task
+- `PUT /api/tasks/:id` - Update a task
+- `DELETE /api/tasks/:id` - Delete a task
+- `GET /api/scans` - Get scan history
 
 ### Environment Variables
-Set these secrets in Supabase Edge Functions:
+Set these in Vercel environment variables:
 - `OPENAI_API_KEY` - Your OpenAI API key
-- `SUPABASE_URL` - Your Supabase project URL
-- `SUPABASE_ANON_KEY` - Your Supabase anon/public key
+- `POSTGRES_URL` - Automatically set by Vercel Postgres
+- `BLOB_READ_WRITE_TOKEN` - Automatically set by Vercel Blob
 
 ## Deployment
-
-For detailed deployment instructions, see [DEPLOYMENT.md](DEPLOYMENT.md)
-
-**Quick Start:**
-1. Create Supabase project
-2. Run database migrations
-3. Create private `documents` storage bucket
-4. Configure Google OAuth
-5. Deploy Edge Functions: `supabase functions deploy`
-6. Add Supabase credentials to Flutter app
+See [DEPLOYMENT.md](DEPLOYMENT.md) for detailed deployment instructions for both backend (Vercel) and frontend.
 
 ## Security Notes
 - Never commit API keys to GitHub
-- Use private storage buckets for sensitive documents
-- Row-level security ensures users can only access their own data
+- Use Vercel environment variables for sensitive data
+- Vercel Blob storage supports private access
+- Database has row-level security policies
 - AI API keys are stored server-side only

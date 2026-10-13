@@ -56,3 +56,12 @@ app.*.map.json
 .env.*.local
 *.env.local
 supabase/.env
+backend/.env
+
+# Node.js / Next.js
+backend/node_modules/
+backend/.next/
+backend/out/
+backend/.turbo/
+backend/vercel/
+backend/.vercel/
