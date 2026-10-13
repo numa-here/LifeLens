@@ -1,0 +1,82 @@
+{
+  "@@locale": "en",
+  "appTitle": "LifeLens AI",
+  "appTagline": "Intelligent Document Analysis & Actionable Insights",
+  "signInWithGoogle": "Sign in with Google",
+  "quickDemoMode": "Quick Demo Mode (Bypass Auth)",
+  "welcomeUser": "Hello, {name}",
+  "@welcomeUser": {
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Numa"
+      }
+    }
+  },
+  "todayBriefing": "Daily AI Briefing",
+  "briefingSubtitle": "Your top 3 priority actions for today",
+  "viewFullBriefing": "View Full Briefing",
+  "dashboardMetrics": "Overview",
+  "overdueTasks": "Overdue",
+  "dueTodayTasks": "Due Today",
+  "pendingTasks": "Pending",
+  "completedTasks": "Completed",
+  "analyzeDocumentCTA": "Scan & Analyze Document",
+  "recentTasks": "Recent Tasks",
+  "viewAllTasks": "View All",
+  "navHome": "Home",
+  "navTasks": "My Tasks",
+  "navHistory": "History",
+  "navSettings": "Settings",
+  "uploadTitle": "Upload Document",
+  "uploadSubtitle": "Capture photo, pick image/PDF, or paste text",
+  "tabFile": "Document / Photo",
+  "tabPastedText": "Pasted Text",
+  "takePhoto": "Take Photo (Camera)",
+  "chooseGallery": "Choose Image",
+  "chooseFile": "Pick PDF / Document",
+  "pasteTextHint": "Paste any notice, bill, letter or handwritten text here...",
+  "processButton": "Analyze with LifeLens AI",
+  "analyzingDoc": "Analyzing Document...",
+  "recognizingHandwriting": "Recognizing handwriting and printed text...",
+  "detectingLanguage": "Detecting language and extracting tasks...",
+  "reviewTitle": "Review & Confirm",
+  "detectedLanguage": "Detected Language: {lang}",
+  "@detectedLanguage": {
+    "placeholders": {
+      "lang": {
+        "type": "String",
+        "example": "English"
+      }
+    }
+  },
+  "ocrText": "Extracted Text",
+  "suggestedTasks": "Suggested Tasks ({count})",
+  "@suggestedTasks": {
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "3"
+      }
+    }
+  },
+  "sourceEvidence": "Source Evidence",
+  "uncertainDateWarning": "Uncertain date detected. Please verify deadline.",
+  "confirmAndSave": "Confirm & Save to Tasks",
+  "saveSuccess": "Tasks saved successfully!",
+  "priorityUrgent": "Urgent",
+  "priorityHigh": "High",
+  "priorityMedium": "Medium",
+  "priorityLow": "Low",
+  "filterAll": "All",
+  "historyTitle": "Scan History",
+  "noHistory": "No previous scans found.",
+  "deleteScan": "Delete Scan",
+  "scanDetail": "Scan Details",
+  "settingsTitle": "Settings",
+  "selectLanguage": "Interface Language",
+  "signOut": "Sign Out",
+  "english": "English",
+  "hindi": "हिन्दी (Hindi)",
+  "telugu": "తెలుగు (Telugu)"
+}
