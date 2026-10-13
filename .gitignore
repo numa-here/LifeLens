@@ -5,12 +5,14 @@
 *.swp
 .DS_Store
 .atom/
+.build/
 .buildlog/
 .history
 .svn/
+.swiftpm/
 migrate_working_dir/
 
-# IntelliJ related
+# IntelliJ / Android Studio
 *.iml
 *.ipr
 *.iws
@@ -21,7 +23,7 @@ migrate_working_dir/
 # is commented out by default.
 #.vscode/
 
-# Flutter/Dart/Pub related
+# Flutter / Dart
 **/doc/api/
 **/ios/Flutter/.last_build_id
 .dart_tool/
@@ -31,6 +33,8 @@ migrate_working_dir/
 .pub-cache/
 .pub/
 /build/
+**/build/
+/coverage/
 
 # Symbolication related
 app.*.symbols
@@ -38,13 +42,17 @@ app.*.symbols
 # Obfuscation related
 app.*.map.json
 
-# Android Studio will place build artifacts here
-/android/app/debug
-/android/app/profile
-/android/app/release
+# Android build outputs
+**/android/app/debug
+**/android/app/profile
+**/android/app/release
 
-# Supabase
+# Windows build artifacts
+**/windows/flutter/ephemeral/
+
+# Secrets & local env
 .env
 .env.local
 .env.*.local
+*.env.local
 supabase/.env

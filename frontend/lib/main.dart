@@ -5,10 +5,13 @@ import 'providers/locale_provider.dart';
 import 'providers/task_provider.dart';
 import 'services/auth_service.dart';
 import 'services/supabase_service.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
   // Initialize Supabase configuration (gracefully runs in Mock Mode if keys are unconfigured)
   await SupabaseService().initialize();
+
   runApp(
     MultiProvider(
       providers: [

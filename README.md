@@ -31,26 +31,21 @@ See upcoming deadlines, pending and completed tasks, and priority.
 ### 9. Daily AI Briefing
 Summarize what's due soon and suggest the next three actions.
 
-## Project Status
-
-LifeLens is under development. Features will be implemented progressively as part of the project.
-
-## Platform Support
-
-LifeLens is planned as a cross-platform application using Flutter and Dart, targeting:
-
-- Android
-- iOS
-- Web
-- Windows
-- macOS
+## Division of Work
+- **Numa (Frontend Developer)**: Flutter mobile application, UI screens, Material 3 design, dynamic localization (English, Hindi, Telugu), client state management, and mock fallback services.
+- **Omema (Backend & AI Developer)**: Supabase PostgreSQL database, Row Level Security, private storage for scan images, and Edge Functions (`analyze-document` and `daily-briefing`).
 
 ## Project Structure
-
 ```
 LifeLens/
-├── frontend/                       # Flutter app (Numa's part)
-├── supabase/
+├── lib/                   # Flutter & Dart mobile application (Numa)
+│   ├── screens/          # App screens (Login, Home, Upload, Review, My Tasks, Briefing, History, Settings)
+│   ├── widgets/          # Reusable UI components (TaskCard, UploadBox, PriorityBadge, LoadingIndicator)
+│   ├── services/         # API & mock integration layer (Supabase, Auth, Document, Task, ScanHistory)
+│   ├── providers/        # State management (LocaleProvider, TaskProvider)
+│   ├── models/           # Data contracts (Task, ScanRecord, DocumentAnalysisResult)
+│   └── l10n/             # Localization files (en, hi, te)
+├── supabase/             # Supabase backend & Edge functions (Omema)
 │   ├── config.toml
 │   ├── migrations/
 │   │   ├── 001_create_tables.sql
@@ -63,6 +58,20 @@ LifeLens/
 ├── .gitignore
 └── README.md
 ```
+
+## Running the Frontend
+```bash
+flutter pub get
+flutter run
+```
+
+## Platform Support
+LifeLens is built with Flutter and Dart, supporting:
+- Android
+- iOS
+- Web
+- Windows
+- macOS
 
 ## Backend Setup
 
