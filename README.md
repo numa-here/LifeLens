@@ -99,6 +99,18 @@ Set these secrets in Supabase Edge Functions:
 - `SUPABASE_URL` - Your Supabase project URL
 - `SUPABASE_ANON_KEY` - Your Supabase anon/public key
 
+## Deployment
+
+For detailed deployment instructions, see [DEPLOYMENT.md](DEPLOYMENT.md)
+
+**Quick Start:**
+1. Create Supabase project
+2. Run database migrations
+3. Create private `documents` storage bucket
+4. Configure Google OAuth
+5. Deploy Edge Functions: `supabase functions deploy`
+6. Add Supabase credentials to Flutter app
+
 ## Security Notes
 - Never commit API keys to GitHub
 - Use private storage buckets for sensitive documents
