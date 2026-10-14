@@ -48,12 +48,15 @@ LifeLens/
 │   │   └── l10n/         # Localization files (en, hi, te)
 │   └── pubspec.yaml
 ├── backend/              # Next.js backend & API routes (Omema)
-│   ├── api/
-│   │   ├── analyze-document/
-│   │   ├── daily-briefing/
-│   │   ├── upload/
-│   │   ├── tasks/
-│   │   └── scans/
+│   ├── app/
+│   │   ├── api/
+│   │   │   ├── analyze-document/
+│   │   │   ├── daily-briefing/
+│   │   │   ├── upload/
+│   │   │   ├── tasks/
+│   │   │   └── scans/
+│   │   ├── layout.tsx
+│   │   └── page.tsx
 │   ├── lib/
 │   │   ├── db.ts
 │   │   ├── schema.ts
@@ -119,7 +122,22 @@ Set these in Vercel environment variables:
 - `BLOB_READ_WRITE_TOKEN` - Automatically set by Vercel Blob
 
 ## Deployment
-See [DEPLOYMENT.md](DEPLOYMENT.md) for detailed deployment instructions for both backend (Vercel) and frontend.
+
+### Deploy Backend to Vercel
+```bash
+cd backend
+vercel login
+vercel
+```
+
+### Deploy Frontend to Vercel
+```bash
+cd frontend
+vercel login
+vercel
+```
+
+See [DEPLOYMENT.md](DEPLOYMENT.md) for detailed deployment instructions.
 
 ## Security Notes
 - Never commit API keys to GitHub

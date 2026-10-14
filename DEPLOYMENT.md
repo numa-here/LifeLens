@@ -1,16 +1,13 @@
 # LifeLens Deployment Guide (Vercel)
 
+## Overview
+LifeLens requires two separate Vercel deployments:
+1. **Backend** - Next.js API server (deployed from `backend/` directory)
+2. **Frontend** - Flutter web app (deployed from `frontend/` directory)
+
 ## Backend Deployment (Omema's Part)
 
-### Prerequisites
-- Vercel account (https://vercel.com)
-- OpenAI API key (https://platform.openai.com/api-keys)
-- Node.js 18+ installed
-- Git installed
-
 ### Step 1: Prepare the Backend
-The backend is now a Next.js application ready for Vercel deployment.
-
 ```bash
 cd backend
 npm install
@@ -39,16 +36,11 @@ npm install
 4. Click **Run**
 5. Verify both tables were created successfully
 
-### Step 5: Deploy to Vercel
+### Step 5: Deploy Backend to Vercel
 ```bash
-# Install Vercel CLI
-npm install -g vercel
-
-# Login to Vercel
-vercel login
-
-# Deploy the backend
 cd backend
+npm install -g vercel
+vercel login
 vercel
 ```
 
@@ -72,39 +64,51 @@ The following are automatically set by Vercel when you add Postgres and Blob:
 
 ### Step 7: Redeploy with Environment Variables
 ```bash
+cd backend
 vercel --prod
 ```
 
-### Step 8: Get API Endpoint URLs
-After deployment, Vercel will provide URLs like:
+### Step 8: Get Backend API URL
+After deployment, Vercel will provide a URL like:
+- `https://lifelens-backend.vercel.app`
+
+Your API endpoints will be:
 - `https://lifelens-backend.vercel.app/api/analyze-document`
 - `https://lifelens-backend.vercel.app/api/daily-briefing`
-- `https://lifelens-backend.vercel.app/api/upload`
-- `https://lifelens-backend.vercel.app/api/tasks`
+- etc.
 
 ## Frontend Deployment (Numa's Part)
 
-### For Web Deployment (Vercel)
-1. Build the Flutter web app:
+### Step 1: Build Flutter Web App
 ```bash
 cd frontend
 flutter build web --release
 ```
 
-2. Deploy to Vercel:
+### Step 2: Deploy to Vercel
 ```bash
 npm install -g vercel
-cd build/web
+vercel login
 vercel
 ```
 
-3. Add environment variables in Vercel dashboard:
-   - `BACKEND_URL` (your Vercel backend URL)
-   - `OPENAI_API_KEY` (if needed for client-side features)
+Follow the prompts:
+- Set project name: `lifelens-frontend`
+- Select framework: None
+- Set output directory: `build/web`
 
-### For Mobile Deployment
-1. Android: Build APK/AAB and upload to Google Play Console
-2. iOS: Build IPA and upload to App Store Connect
+### Step 3: Configure Environment Variables
+In Vercel Dashboard → **Settings** → **Environment Variables**, add:
+
+```
+BACKEND_URL=https://lifelens-backend.vercel.app
+```
+
+### Step 4: Redeploy
+```bash
+cd frontend
+vercel --prod
+```
 
 ## API Documentation
 
@@ -300,10 +304,11 @@ npm install next-auth @auth/core
 
 ## Troubleshooting
 
-### Deployment Fails
+### Backend Deployment Fails
 - Check Node.js version (must be 18+)
 - Verify all dependencies are installed
 - Check Vercel deployment logs
+- Ensure you're deploying from the `backend/` directory
 
 ### Database Connection Error
 - Verify POSTGRES_URL is set in Vercel environment variables
@@ -319,6 +324,11 @@ npm install next-auth @auth/core
 - Verify OPENAI_API_KEY is set correctly
 - Check OpenAI account has credits
 - Verify model name (gpt-4o-mini) is available
+
+### Frontend Shows 404
+- Ensure frontend is deployed separately from backend
+- Check the build output directory is `build/web`
+- Verify rewrites are configured in vercel.json
 
 ## Cost Estimation
 

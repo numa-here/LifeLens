@@ -4,11 +4,9 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "echo no build needed",
+    "build": "next build",
     "start": "next start",
-    "lint": "next lint",
-    "db:push": "drizzle-kit push",
-    "db:studio": "drizzle-kit studio"
+    "lint": "next lint"
   },
   "dependencies": {
     "next": "^14.2.0",
