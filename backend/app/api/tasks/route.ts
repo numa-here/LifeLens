@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { db } from '@/lib/db';
-import { tasks } from '@/lib/schema';
+import { db } from '../../../lib/db';
+import { tasks } from '../../../lib/schema';
 import { eq, and, ne } from 'drizzle-orm';
 
 // GET all tasks for a user

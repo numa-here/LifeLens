@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import OpenAI from 'openai';
-import { db } from '@/lib/db';
-import { tasks } from '@/lib/schema';
+import { db } from '../../../lib/db';
+import { tasks } from '../../../lib/schema';
 import { eq, ne } from 'drizzle-orm';
 
 const openai = new OpenAI({

@@ -1,8 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import OpenAI from 'openai';
-import { db } from '@/lib/db';
-import { scanHistory } from '@/lib/schema';
-import { nanoid } from 'nanoid';
+import { db } from '../../../lib/db';
+import { scanHistory } from '../../../lib/schema';
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
