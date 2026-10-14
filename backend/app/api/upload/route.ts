@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { put } from '@vercel/blob';
 
 export async function POST(request: NextRequest) {
   try {
@@ -8,7 +7,6 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Sign-in required.' }, { status: 401 });
     }
 
-    // In production, verify the JWT token here
     const userId = authHeader.replace('Bearer ', '');
 
     const formData = await request.formData();
@@ -29,25 +27,20 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'File too large. Max 10MB.' }, { status: 413 });
     }
 
-    // Generate unique filename
-    const fileExtension = file.name.split('.').pop();
-    const uniqueId = `${Date.now()}-${Math.random().toString(36).substring(7)}`;
-    const filename = `${userId}/${uniqueId}.${fileExtension}`;
-
-    // Upload to Vercel Blob
-    const blob = await put(filename, file, {
-      access: 'private',
-    });
+    // Convert file to base64
+    const bytes = await file.arrayBuffer();
+    const buffer = Buffer.from(bytes);
+    const base64 = buffer.toString('base64');
+    const dataUrl = `data:${file.type};base64,${base64}`;
 
     return NextResponse.json({
-      url: blob.url,
-      pathname: blob.pathname,
-      size: blob.size,
-      uploadedAt: blob.uploadedAt,
+      dataUrl,
+      size: file.size,
+      type: file.type,
     });
   } catch (error) {
     console.error('Upload error:', error);
-    return NextResponse.json({ error: 'Failed to upload file.' }, { status: 500 });
+    return NextResponse.json({ error: 'Failed to process file.' }, { status: 500 });
   }
 }
 
