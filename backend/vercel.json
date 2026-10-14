@@ -2,6 +2,6 @@
   "buildCommand": "npm run build",
   "outputDirectory": ".next",
   "framework": null,
-  "outputDirectory": "public"
+  "outputDirectory": "public",
   "installCommand": "npm install"
 }
