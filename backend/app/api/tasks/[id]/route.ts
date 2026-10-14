@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { db } from '../../../../lib/db';
-import { tasks } from '../../../../lib/schema';
+import { db } from '@/lib/db';
+import { tasks } from '@/lib/schema';
 import { eq, and } from 'drizzle-orm';
 
 // PUT update a task

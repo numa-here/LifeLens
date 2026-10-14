@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { db } from '../../../lib/db';
-import { scanHistory } from '../../../lib/schema';
+import { db } from '@/lib/db';
+import { scanHistory } from '@/lib/schema';
 import { eq } from 'drizzle-orm';
 
 // GET all scans for a user
