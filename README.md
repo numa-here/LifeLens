@@ -1,147 +1,165 @@
-# LifeLens
+# LifeLens AI
 
-**LifeLens** is an AI-powered application designed to help users understand documents, identify important tasks and deadlines, and manage their responsibilities efficiently.
+**LifeLens AI** is an intelligent document scanning and organization application that transforms handwritten and printed documents into actionable insights using AI-powered OCR and document analysis.
 
 ## Features
 
-### 1. Google Login
-Sign in with a Google account and securely access personal data.
+### 🎯 Core Capabilities
+- **Document Scanning**: Upload images of documents for instant text extraction
+- **Handwriting Recognition**: Advanced AI to read handwritten notes and documents
+- **Multilingual OCR**: Support for English, Hindi, Urdu, Arabic, and more languages
+- **AI Analysis**: Extract key information, summarize content, and identify actionable tasks
+- **Scan History**: Save and organize all your scans with powerful search and filtering
+- **Dashboard**: Manage your documents with an intuitive interface
 
-### 2. Multilingual App
-Choose the interface language, with English, Hindi and Telugu as the initial examples.
-
-### 3. Scan or Upload Documents
-Capture a photo or select an image; add pasted text and PDF support where feasible.
-
-### 4. Handwriting Recognition
-Extract handwritten and printed text, detect the text language and let users correct errors.
-
-### 5. AI Document Analysis
-Extract tasks, deadlines, required documents, priorities and supporting evidence.
-
-### 6. Review and Confirm
-Edit suggested tasks and verify uncertain dates before saving.
-
-### 7. My Scans and History
-Store scan images and extracted text, then reopen previous scans.
-
-### 8. Task Dashboard
-See upcoming deadlines, pending and completed tasks, and priority.
-
-### 9. Daily AI Briefing
-Summarize what's due soon and suggest the next three actions.
-
-## Division of Work
-- **Numa (Frontend Developer)**: Flutter mobile application, UI screens, Material 3 design, dynamic localization (English, Hindi, Telugu), client state management, and mock fallback services.
-- **Omema (Backend & AI Developer)**: Next.js API routes, Vercel Postgres database, Vercel Blob storage, and AI integration with OpenAI.
+### 📱 Platform Support
+- **Web Application**: Complete responsive web app (Next.js)
+- **Flutter Mobile**: Cross-platform mobile app (Android, iOS, Web, Windows, macOS)
 
 ## Project Structure
+
 ```
 LifeLens/
-├── frontend/             # Flutter & Dart mobile application (Numa)
-│   ├── lib/
-│   │   ├── screens/      # App screens (Login, Home, Upload, Review, My Tasks, Briefing, History, Settings)
-│   │   ├── widgets/      # Reusable UI components (TaskCard, UploadBox, PriorityBadge, LoadingIndicator)
-│   │   ├── services/     # API & mock integration layer
-│   │   ├── providers/    # State management (LocaleProvider, TaskProvider)
-│   │   ├── models/       # Data contracts (Task, ScanRecord, DocumentAnalysisResult)
-│   │   └── l10n/         # Localization files (en, hi, te)
-│   └── pubspec.yaml
-├── backend/              # Next.js backend & API routes (Omema)
+├── backend/              # Next.js Web Application & API
 │   ├── app/
-│   │   ├── api/
-│   │   │   ├── analyze-document/
-│   │   │   ├── daily-briefing/
-│   │   │   ├── upload/
-│   │   │   ├── tasks/
-│   │   │   └── scans/
-│   │   ├── layout.tsx
-│   │   └── page.tsx
+│   │   ├── page.tsx              # Landing page
+│   │   ├── dashboard/page.tsx    # Dashboard with scan history
+│   │   ├── scanner/page.tsx      # Document scanner interface
+│   │   ├── api/                  # API routes
+│   │   │   ├── analyze-document/ # OCR & AI analysis
+│   │   │   ├── daily-briefing/   # Task briefing
+│   │   │   ├── upload/           # Image upload
+│   │   │   ├── tasks/            # Task management
+│   │   │   └── scans/            # Scan history
+│   │   ├── layout.tsx            # Root layout
+│   │   └── globals.css           # Global styles
 │   ├── lib/
-│   │   ├── db.ts
-│   │   ├── schema.ts
-│   │   └── storage.ts
+│   │   ├── db.ts                 # Database connection
+│   │   ├── schema.ts             # Database schema
+│   │   └── storage.ts            # Storage utilities
 │   ├── migrations/
-│   │   └── 0001_init.sql
+│   │   └── 0001_init.sql         # Database migration
 │   ├── package.json
 │   └── tsconfig.json
-├── .gitignore
-├── README.md
-└── DEPLOYMENT.md
+├── frontend/             # Flutter Mobile Application
+│   ├── lib/
+│   │   ├── screens/              # App screens
+│   │   ├── widgets/              # UI components
+│   │   ├── services/              # API integration
+│   │   ├── providers/             # State management
+│   │   ├── models/               # Data models
+│   │   └── l10n/                 # Localization
+│   └── pubspec.yaml
+├── WEB_DEPLOYMENT.md             # Web deployment guide
+├── DEPLOYMENT.md                 # General deployment guide
+└── README.md
 ```
 
-## Running the Frontend
+## Quick Start - Web Application
+
+### Prerequisites
+- Vercel account (https://vercel.com)
+- OpenAI API key (https://platform.openai.com/api-keys)
+
+### Deploy to Vercel
+
+1. **Import Project**
+   - Go to https://vercel.com/dashboard
+   - Click **Add New** → **Project**
+   - Import `numa-here/LifeLens` from GitHub
+   - **Important**: Set **Root Directory** to `backend`
+   - Click **Deploy**
+
+2. **Configure Environment Variables**
+   - Go to **Settings** → **Environment Variables**
+   - Add: `OPENAI_API_KEY=your_api_key_here`
+   - Redeploy the project
+
+3. **(Optional) Set Up Database**
+   - Add Vercel Postgres for scan history
+   - Run the migration from `backend/migrations/0001_init.sql`
+
+See [WEB_DEPLOYMENT.md](WEB_DEPLOYMENT.md) for detailed instructions.
+
+## Local Development
+
+### Backend (Web App)
+```bash
+cd backend
+npm install
+npm run dev
+```
+Visit http://localhost:3000
+
+### Frontend (Flutter)
 ```bash
 cd frontend
 flutter pub get
 flutter run
 ```
 
-## Running the Backend (Local Development)
-```bash
-cd backend
-npm install
-npm run dev
-```
+## API Endpoints
 
-## Platform Support
-LifeLens is built with Flutter and Dart, supporting:
-- Android
-- iOS
-- Web
-- Windows
-- macOS
-
-## Backend Setup
-
-### Prerequisites
-- Vercel account (https://vercel.com)
-- OpenAI API key (https://platform.openai.com/api-keys)
-- Node.js 18+ installed
-
-### Database Setup
-The backend uses Vercel Postgres. Follow the deployment guide to set up:
-1. Create Vercel Postgres database
-2. Run the SQL migration from `backend/migrations/0001_init.sql`
-3. Set up Vercel Blob storage for document images
-
-### API Endpoints
-- `POST /api/analyze-document` - Analyze documents (text or image)
-- `POST /api/daily-briefing` - Generate daily AI briefing
+- `POST /api/analyze-document` - OCR and AI document analysis
+- `POST /api/daily-briefing` - Generate daily task briefing
 - `POST /api/upload` - Upload document images
 - `GET /api/tasks` - Get user's tasks
 - `POST /api/tasks` - Create a new task
 - `PUT /api/tasks/:id` - Update a task
 - `DELETE /api/tasks/:id` - Delete a task
 - `GET /api/scans` - Get scan history
+- `DELETE /api/scans/:id` - Delete a scan
 
-### Environment Variables
-Set these in Vercel environment variables:
+## Environment Variables
+
+### Required for Web App
 - `OPENAI_API_KEY` - Your OpenAI API key
-- `POSTGRES_URL` - Automatically set by Vercel Postgres
-- `BLOB_READ_WRITE_TOKEN` - Automatically set by Vercel Blob
 
-## Deployment
+### Optional (for full functionality)
+- `POSTGRES_URL` - Vercel Postgres connection (for scan history)
+- `POSTGRES_PRISMA_URL` - Prisma-compatible connection
+- `POSTGRES_URL_NON_POOLING` - Non-pooled connection
+- `BLOB_READ_WRITE_TOKEN` - Vercel Blob storage (for file storage)
 
-### Deploy Backend to Vercel
-```bash
-cd backend
-vercel login
-vercel
-```
+## Technology Stack
 
-### Deploy Frontend to Vercel
-```bash
-cd frontend
-vercel login
-vercel
-```
+### Web Application
+- **Framework**: Next.js 14 (App Router)
+- **Styling**: Tailwind CSS
+- **Database**: Vercel Postgres (optional)
+- **ORM**: Drizzle ORM
+- **AI**: OpenAI GPT-4o-mini (vision model)
+- **Deployment**: Vercel
 
-See [DEPLOYMENT.md](DEPLOYMENT.md) for detailed deployment instructions.
+### Mobile Application
+- **Framework**: Flutter
+- **State Management**: Provider
+- **Platform**: Android, iOS, Web, Windows, macOS
 
 ## Security Notes
+
 - Never commit API keys to GitHub
-- Use Vercel environment variables for sensitive data
-- Vercel Blob storage supports private access
+- Use environment variables for sensitive data
+- The web app uses demo authentication (production requires proper auth)
 - Database has row-level security policies
 - AI API keys are stored server-side only
+
+## Division of Work
+
+- **Numa (Frontend Developer)**: Flutter mobile application, UI screens, Material 3 design, dynamic localization (English, Hindi, Telugu), client state management
+- **Omema (Backend & AI Developer)**: Next.js web application, API routes, database schema, AI integration with OpenAI
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## License
+
+This project is licensed under the MIT License.
+
+## Support
+
+For issues or questions:
+- Check the deployment guides: [WEB_DEPLOYMENT.md](WEB_DEPLOYMENT.md)
+- Review the GitHub repository: https://github.com/numa-here/LifeLens
+- Open an issue on GitHub for bugs or feature requests
